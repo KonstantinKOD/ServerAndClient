@@ -1,8 +1,5 @@
 package client;
 
-import server.ServerView;
-import server.ServerWindow;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -32,7 +29,7 @@ public class ClientGUI extends JFrame implements ClientView {
 
 
     // создание окна клиента(Конструктор)
-    public ClientGUI(ServerWindow serverWindow) { // передаем объек сервера
+    public ClientGUI() { // передаем объек сервера
         setSize(WIDTH, HEIGHT);
         setResizable(true);
         setTitle("Chat client");
@@ -40,7 +37,6 @@ public class ClientGUI extends JFrame implements ClientView {
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         createPanel();
         setVisible(true);
-        clientController = new ClientController(this, serverWindow.);
     }
 
 
@@ -71,7 +67,7 @@ public class ClientGUI extends JFrame implements ClientView {
      * Метод, описывающий отключение клиента от сервера со стороны клиента
      */
     public void disconnectFromServer() {
-        clientController.disconnectFromServer();
+        clientController.disconnectedFromServer();
     }
 
     /**
@@ -94,7 +90,7 @@ public class ClientGUI extends JFrame implements ClientView {
     /**
      * Метод для отправки сообщения. Используется при нажатии на кнопку send
      */
-    public void message() {
+    public void message(String text) {
         clientController.message(tfMessage.getText());
         tfMessage.setText("");
     }

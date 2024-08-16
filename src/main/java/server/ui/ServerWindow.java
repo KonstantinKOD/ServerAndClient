@@ -47,11 +47,6 @@ public class ServerWindow extends JFrame {
         setVisible(true);
     }
 
-    // метод получения переписки(с прошлого раза/разов)
-    public String getLog() {
-        return readLog();
-    }
-
     // метод подключения пользователя
     public boolean connectUser(ClientGUI clientGUI) { // передаем пользователя
         if (!work) {
@@ -61,6 +56,9 @@ public class ServerWindow extends JFrame {
         return true;
     }
 
+    // метод получения переписки(с прошлого раза/разов)
+    public String getLog() {
+        return readLog();    }
 
     // метод отключения пользователя
     public void disconnectUser(ClientGUI clientGUI) {

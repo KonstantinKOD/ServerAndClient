@@ -4,8 +4,6 @@ package client;
  */
 
 
-import server.ServerView;
-
 /**
  * класс содержащий логику работы клиента
  *
@@ -17,19 +15,21 @@ public class ClientController {
     private boolean connected;
     private String name; // лучше использовать Класс User(нужно его создать)
     private ClientView clientView;
-    private ServerView serverView;
+    private Server server;
 
-    public ClientController(ClientView clientView, ServerView serverView){
-        this.clientView = clientView;
-        this.serverView = serverView;
-    }
 
+
+    /**
+     * Метод попытки подключения к серверу. Вызывается из GUI
+     * @param name имя пользователя, которым будем подписывать исходящие сообщения
+     * @return ответ от сервера. true, если прошли авторизацию
+     */
     public boolean connectToServer(String name) {
         this.name = name;
-        if (serverView.connectUser(this)) {
+        if (server.connectUser(this)) {
             showOnWindow("Вы успешно подключились!\n");
             connected = true;
-            String log = serverView.getHistory();
+            String log = server.getHistory();
             if (log != null) {
                 showOnWindow(log);
             }
@@ -40,29 +40,47 @@ public class ClientController {
         }
     }
 
-    public void disconnectFromServer() {
+    /**
+     * Метод отключения от сервера инициализированное сервером
+     */
+    public void disconnectedFromServer() {
         if (connected) {
             connected = false;
             clientView.disconnectedFromServer();
-            serverController.disconnectUser(this);
             showOnWindow("Вы были отключены от сервера!");
         }
     }
 
+    public void disconnectFromServer() {
+        server.disconnectUser(this);
+    }
+
+    /**
+     * Метод, с помощью которого сервер передает клиенту сообщения
+     * @param text текст переданный от сервера
+     */
     public void answerFromServer(String text) {
         showOnWindow(text);
     }
 
+    /**
+     * Метод для передачи сообщения на сервер
+     * @param text текст передаваемого сообщения
+     */
     public void message(String text) {
         if (connected) {
             if (!text.isEmpty()) {
-                serverController.message(name + ": " + text);
+                server.message(name + ": " + text);
             }
         } else {
             showOnWindow("Нет подключения к серверу");
         }
     }
 
+    /**
+     * Метод вывода сообщения на GUI
+     * @param text текст, который требуется вывести на экран
+     */
     private void showOnWindow(String text) {
         clientView.showMessage(text + "\n");
     }
