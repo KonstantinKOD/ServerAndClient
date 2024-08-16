@@ -1,6 +1,7 @@
-package server;
+package server.ui;
 
-import client.ClientGUI;
+import client.ui.ClientGUI;
+import server.domain.ServerController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,8 @@ public class ServerWindow extends JFrame {
     JButton btStart, btStop;
     JTextArea log;
     boolean work;
+
+    private ServerController serverController;
 
     //конструктор окна сервера
     public ServerWindow() {
@@ -81,7 +84,7 @@ public class ServerWindow extends JFrame {
     // метод перебора всех пользователей и передача им сообщения
     private void answerAll(String text) {
         for (ClientGUI clientGUI : clientGUIList) {
-            clientGUI.message(text);
+            clientGUI.message();
         }
     }
 
@@ -162,4 +165,6 @@ public class ServerWindow extends JFrame {
         panel.add(btStop);
         return panel;
     }
+
+
 }

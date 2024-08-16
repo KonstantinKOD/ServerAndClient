@@ -1,2 +1,8 @@
-package server.ui;public interface ServerView {
+package server.ui;
+
+import server.domain.ServerController;
+
+public interface ServerView {
+    void showMessage(String message);
+    void setServerController(ServerController serverController);
 }

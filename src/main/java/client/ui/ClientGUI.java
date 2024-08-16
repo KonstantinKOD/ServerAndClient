@@ -1,4 +1,6 @@
-package client;
+package client.ui;
+
+import client.domain.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,15 +20,13 @@ public class ClientGUI extends JFrame implements ClientView {
     JPasswordField password;
     JButton btLogin, btSend;
     JPanel headerPanel;
-    private ClientController clientController;
-
 
     /**
      * Контроллер, описывающий реакцию на различные события.
      * Когда что-то происходит, например нажата какая-то кнопка на экране, то обращаемся
      * к контроллеру и вызываем нужный метод
      */
-
+    private ClientController clientController;
 
     // создание окна клиента(Конструктор)
     public ClientGUI() { // передаем объек сервера
@@ -39,15 +39,18 @@ public class ClientGUI extends JFrame implements ClientView {
         setVisible(true);
     }
 
-
-
-            // сеттер
-    public void setClient(ClientController clientController){
-        this.clientController=clientController;
+    /**
+     * Сеттер
+     *
+     * @param clientController объект контроллера, описывающий логику поведения
+     */
+    public void setClientController(ClientController clientController) {
+        this.clientController = clientController;
     }
 
     /**
      * Метод вывода текста на экран GUI. Вызывается из контроллера
+     *
      * @param message текст, который требуется отобразить на экране
      */
     @Override
@@ -72,17 +75,18 @@ public class ClientGUI extends JFrame implements ClientView {
 
     /**
      * Метод изменения видимости верхней панели экрана, на которой виджеты для авторизации (например кнопка логин)
+     *
      * @param visible true, если надо сделать панель видимой
      */
-    public void hideHeaderPanel(boolean visible){
+    public void hideHeaderPanel(boolean visible) {
         headerPanel.setVisible(visible);
     }
 
     /**
      * Метод, срабатывающий при нажатии кнопки авторизации
      */
-    public void login(){
-        if (clientController.connectToServer(tfLogin.getText())){
+    public void login() {
+        if (clientController.connectToServer(tfLogin.getText())) {
             headerPanel.setVisible(false);
         }
     }
@@ -90,7 +94,7 @@ public class ClientGUI extends JFrame implements ClientView {
     /**
      * Метод для отправки сообщения. Используется при нажатии на кнопку send
      */
-    public void message(String text) {
+    public void message() {
         clientController.message(tfMessage.getText());
         tfMessage.setText("");
     }
@@ -106,6 +110,7 @@ public class ClientGUI extends JFrame implements ClientView {
 
     /**
      * Метод создания панели авторизации
+     *
      * @return возвращает созданную панель
      */
     private Component createHeaderPanel() {
@@ -136,6 +141,7 @@ public class ClientGUI extends JFrame implements ClientView {
 
     /**
      * Метод создания центральной панели, на которой отображается история сообщений
+     *
      * @return возвращает созданную панель
      */
     private Component createLog() {
@@ -146,6 +152,7 @@ public class ClientGUI extends JFrame implements ClientView {
 
     /**
      * Метод создания панели отправки сообщений
+     *
      * @return возвращает созданную панель
      */
     // создание нижней панели(панели отправки сообщений(подвал(Footer)))
@@ -176,7 +183,8 @@ public class ClientGUI extends JFrame implements ClientView {
 
     /**
      * Метод срабатывающий при важных событиях связанных с графическим окном (например окно в фокусе)
-     * @param e  the window event
+     *
+     * @param e the window event
      */
     // преопределение нажатия крестика
     // при его нажатии отключаются все клиенты

@@ -1,8 +1,11 @@
-package client;
+package client.domain;
 /**
 КОД С СЕМИНАРА 2(ВТОРОГО), ПЕРЕНЕСТИ В JDK_SEM2_HW
  */
 
+
+import client.ui.ClientView;
+import server.domain.ServerController;
 
 /**
  * класс содержащий логику работы клиента
@@ -15,9 +18,14 @@ public class ClientController {
     private boolean connected;
     private String name; // лучше использовать Класс User(нужно его создать)
     private ClientView clientView;
-    private Server server;
+    private ServerController serverController;
 
-
+    //сеттер(связка клиента с интерфейсом(сеттер нужно передать в интерфейс))
+    public ClientController(ClientView clientView, ServerController serverController) {
+        this.clientView = clientView;
+        this.serverController = serverController;
+        clientView.setClientController(this);
+    }
 
     /**
      * Метод попытки подключения к серверу. Вызывается из GUI
@@ -51,16 +59,11 @@ public class ClientController {
         }
     }
 
-    public void disconnectFromServer() {
-        server.disconnectUser(this);
-    }
-
     /**
-     * Метод, с помощью которого сервер передает клиенту сообщения
-     * @param text текст переданный от сервера
+     * Метод отключения от сервера инициализированное клиентом (например закрыто GUI)
      */
-    public void answerFromServer(String text) {
-        showOnWindow(text);
+    public void disconnectFromServer() {
+        serverController.disconnectUser(this);
     }
 
     /**
@@ -70,11 +73,19 @@ public class ClientController {
     public void message(String text) {
         if (connected) {
             if (!text.isEmpty()) {
-                server.message(name + ": " + text);
+                serverController.message(name + ": " + text);
             }
         } else {
             showOnWindow("Нет подключения к серверу");
         }
+    }
+
+    /**
+     * Геттер
+     * @return возвращает имя клиента
+     */
+    public String getName(){
+        return name;
     }
 
     /**

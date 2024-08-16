@@ -1,4 +1,6 @@
-package client;
+package client.ui;
+
+import client.domain.ClientController;
 
 public interface ClientView {
     /**
@@ -11,4 +13,11 @@ public interface ClientView {
      * Метод отключения от сервера со стороны сервера
      */
     void disconnectedFromServer();
+
+    /**
+     * Сеттер
+     * @param clientController объект, описывающий логику программы
+     */
+    //передаем сеттер в интерфейс для работы классов
+    void setClientController(ClientController clientController);
 }
