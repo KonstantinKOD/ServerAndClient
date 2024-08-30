@@ -34,10 +34,10 @@ public class ClientController {
      */
     public boolean connectToServer(String name) {
         this.name = name;
-        if (server.connectUser(this)) {
+        if (serverController.connectUser(this)) {
             showOnWindow("Вы успешно подключились!\n");
             connected = true;
-            String log = server.getHistory();
+            String log = serverController.getHistory();
             if (log != null) {
                 showOnWindow(log);
             }
@@ -46,6 +46,14 @@ public class ClientController {
             showOnWindow("Подключение не удалось");
             return false;
         }
+    }
+
+    /**
+     * Метод, с помощью которого сервер передает клиенту сообщения
+     * @param text текст переданный от сервера
+     */
+    public void answerFromServer(String text){
+        showOnWindow(text);
     }
 
     /**

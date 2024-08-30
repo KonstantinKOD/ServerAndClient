@@ -12,26 +12,21 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerWindow extends JFrame {
+public class ServerWindow extends JFrame implements ServerView {
     // задаю размеры окна
     private static final int HEIGHT = 555;
     private static final int WIDTH = 507;
     private static final int POSX = 700;
     private static final int POSY = 300;
-    public static final String LOG_PATH = "src/main/java/task/log.txt";
-
-    List<ClientGUI> clientGUIList;
 
     //создаю кнопки для JPanel
-    JButton btStart, btStop;
-    JTextArea log;
-    boolean work;
+    private JButton btStart, btStop;
+    private JTextArea log;
 
     private ServerController serverController;
 
     //конструктор окна сервера
     public ServerWindow() {
-        clientGUIList = new ArrayList<>();
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocation(POSX, POSY); // Позиция на экране
@@ -39,84 +34,18 @@ public class ServerWindow extends JFrame {
         setSize(WIDTH, HEIGHT);
         setTitle("Chat server");
         setResizable(true);
-
         createPanel();
 
-        //добавляю панель и кнопки
-//        JPanel panButton = new JPanel(new GridLayout(1,2));
-//        panButton.add(btStart);
-//        panButton.add(btStop);
-//        add(panButton, BorderLayout.SOUTH);
         setVisible(true);
     }
 
-    // метод подключения пользователя
-    public boolean connectUser(ClientGUI clientGUI) { // передаем пользователя
-        if (!work) {
-            return false;
-        }
-        clientGUIList.add(clientGUI); // если true, добавляем пользователя в список(List)
-        return true;
+    @Override
+    public void setServerController(ServerController serverController) {
+        this.serverController=serverController;
     }
 
-    // метод получения переписки(с прошлого раза/разов)
-    public String getLog() {
-        return readLog();    }
-
-    // метод отключения пользователя
-    public void disconnectUser(ClientGUI clientGUI) {
-        clientGUIList.remove(clientGUI);
-        if (clientGUI != null) {
-            clientGUI.disconnectedFromServer(); // disconnectFromServer отправляется клиенту с сообщением об отключении
-        }
-    }
-
-    // метод для клиента, чтоб отправить сообщение на сервер
-    public void message(String text) {
-        if (!work) {
-            return;
-        }
-        appendLog(text); // метод добавляет сообщение в центральное окно
-        answerAll(text); // метод перебора всех пользователей и передача им сообщения
-        saveInLog(text); // метод сохраняет историю переписки
-    }
-
-    // метод перебора всех пользователей и передача им сообщения
-    private void answerAll(String text) {
-        for (ClientGUI clientGUI : clientGUIList) {
-            clientGUI.message();
-        }
-    }
-
-    // метод сохраняет историю переписки
-    private void saveInLog(String text) {
-        try (FileWriter writer = new FileWriter(LOG_PATH, true)) { // почитать про FileWriter
-            writer.write(text);
-            writer.write("\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // метод для чтения файла логгирования
-    private String readLog() {
-        StringBuilder stringBuilder = new StringBuilder(); // почитать про stringBuilder
-        try (FileReader reader = new FileReader(LOG_PATH)) { // почитать про FileReader
-            int c;
-            while ((c = reader.read()) != -1) {
-                stringBuilder.append(c);
-            }
-            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-            return stringBuilder.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    // метод добавляет сообщение в центральное окно
-    public void appendLog(String text) {
-        log.append(text + "\n");
+    public ServerController getConnection(){
+        return serverController;
     }
 
     // метод создания визуала
@@ -136,12 +65,7 @@ public class ServerWindow extends JFrame {
         btStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (work) {
-                    appendLog("Сервер уже был запущен");
-                } else {
-                    work = true;
-                    appendLog("Сервер запущен!");
-                }
+                serverController.start();
             }
         });
 
@@ -149,15 +73,7 @@ public class ServerWindow extends JFrame {
         btStop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!work) { // если флаг work == false, тогда сообщение ниже
-                    appendLog("Сервер уже был остановлен");
-                } else {
-                    work = false;
-                    while (!clientGUIList.isEmpty()) {
-                        disconnectUser(clientGUIList.get(clientGUIList.size() - 1));
-                    }
-                    appendLog("Сервер остановлен!");
-                }
+                serverController.stop();
             }
         });
 
@@ -165,6 +81,13 @@ public class ServerWindow extends JFrame {
         panel.add(btStop);
         return panel;
     }
+
+    @Override
+    public void showMessage(String msg){
+        log.append(msg);
+    }
+
+
 
 
 }

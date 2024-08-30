@@ -14,43 +14,76 @@ public class ServerController {
     private List<ClientController> clientControllerList;
     private Repository<String> reposotory;
 
-    public ServerController(ServerView serverView, Repository<String> reposotory){
-        this.serverView=serverView;
-        this.reposotory=reposotory;
+    public ServerController(ServerView serverView, Repository<String> reposotory) {
+        this.serverView = serverView;
+        this.reposotory = reposotory;
         clientControllerList = new ArrayList<>();
         serverView.setServerController(this);
     }
 
-    public void start(){
-        if (work){
+    public void start() {
+        if (work) {
             showOnWindow("Сервер уже был запущен");
-        }else {
+        } else {
             work = true;
             showOnWindow("Сервер запущен!");
         }
     }
 
-    public void stop(){
-        if (!work){
+    public void stop() {
+        if (!work) {
             showOnWindow("Сервер уже был остановлен");
-        }else {
+        } else {
             work = false;
-            while (!clientControllerList.isEmpty()){
-
+            while (!clientControllerList.isEmpty()) {
+                disconnectUser(clientControllerList.get(clientControllerList.size() - 1));
             }
+            showOnWindow("Сервер остановлен!");
         }
     }
 
     //метод откучения клиента от сервера
-    public void disconnectUser(ClientController clientController){
+    public void disconnectUser(ClientController clientController) {
         clientControllerList.remove(clientController);
-        if (clientController != null){
+        if (clientController != null) {
             clientController.disconnectedFromServer();
             showOnWindow(clientController.getName() + " отключился от беседы");
         }
     }
 
-    private void showOnWindow(String text){
+    public boolean connectUser(ClientController clientController) { // передаем пользователя
+        if (!work) {
+            return false;
+        }
+        clientControllerList.add(clientController);// если true, добавляем пользователя в список(List)
+        showOnWindow(clientController.getName()+" подключился к беседе");
+        return true;
+    }
+
+    public void message(String text) {
+        if (!work) {
+            return;
+        }
+        showOnWindow(text); // метод добавляет сообщение в центральное окно
+        answerAll(text); // метод перебора всех пользователей и передача им сообщения
+        saveInHistory(text); // метод сохраняет историю переписки
+    }
+
+    public String getHistory(){
+        return reposotory.load();
+    }
+
+    private void answerAll(String text) {
+        for (ClientController clientController : clientControllerList) {
+            clientController.answerFromServer(text);
+        }
+    }
+
+    private void showOnWindow(String text) {
         serverView.showMessage(text + "\n");
+    }
+
+    private void saveInHistory(String text) {
+        reposotory.save(text);
     }
 }
