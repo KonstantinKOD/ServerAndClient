@@ -9,9 +9,9 @@ import java.util.List;
 
 public class ServerController {
     private boolean work;
-    private ServerView serverView;
+    private ServerView serverView; // Поле связывающее класс с интерфейсом
     private List<ClientController> clientControllerList;
-    private Repository<String> repository;
+    private Repository<String> repository; //Связь через интерфейс с передачей дженерика с типом данных String
 
     public ServerController(ServerView serverView, Repository<String> reposotory) {
         this.serverView = serverView;

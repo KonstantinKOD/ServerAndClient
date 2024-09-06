@@ -17,7 +17,7 @@ import server.domain.ServerController;
 public class ClientController {
     private boolean connected;
     private String name; // лучше использовать Класс User(нужно его создать)
-    private ClientView clientView;
+    private ClientView clientView; //Слабая сзвязь в одну сторону через интерфейс
     private ServerController serverController;
 
     //сеттер(связка клиента с интерфейсом(сеттер нужно передать в интерфейс))
