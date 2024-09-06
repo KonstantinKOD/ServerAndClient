@@ -1,7 +1,6 @@
 package server.domain;
 
 import client.domain.ClientController;
-import client.ui.ClientGUI;
 import server.repository.Repository;
 import server.ui.ServerView;
 
@@ -12,11 +11,11 @@ public class ServerController {
     private boolean work;
     private ServerView serverView;
     private List<ClientController> clientControllerList;
-    private Repository<String> reposotory;
+    private Repository<String> repository;
 
     public ServerController(ServerView serverView, Repository<String> reposotory) {
         this.serverView = serverView;
-        this.reposotory = reposotory;
+        this.repository = reposotory;
         clientControllerList = new ArrayList<>();
         serverView.setServerController(this);
     }
@@ -70,7 +69,7 @@ public class ServerController {
     }
 
     public String getHistory(){
-        return reposotory.load();
+        return repository.load();
     }
 
     private void answerAll(String text) {
@@ -84,6 +83,6 @@ public class ServerController {
     }
 
     private void saveInHistory(String text) {
-        reposotory.save(text);
+        repository.save(text);
     }
 }
